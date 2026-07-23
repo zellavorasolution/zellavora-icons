@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    name: Publish to npm + GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Verify tag matches package version
+        run: |
+          pkg="v$(node -p "require('./package.json').version")"
+          tag="${GITHUB_REF_NAME}"
+          if [ "$pkg" != "$tag" ]; then
+            echo "::error::Tag $tag does not match package.json version $pkg."
+            exit 1
+          fi
+
+      - name: Lint · Test · Build
+        run: |
+          npm run icons:generate
+          npm run lint
+          npm test
+          npm run build
+
+      - name: Generate changelog entry
+        id: changelog
+        run: |
+          prev=$(git describe --tags --abbrev=0 "${GITHUB_REF_NAME}^" 2>/dev/null || echo "")
+          echo "## ${GITHUB_REF_NAME}" > RELEASE_NOTES.md
+          echo "" >> RELEASE_NOTES.md
+          if [ -n "$prev" ]; then
+            git log --pretty=format:'- %s (%h)' "${prev}..${GITHUB_REF_NAME}" >> RELEASE_NOTES.md
+          else
+            git log --pretty=format:'- %s (%h)' >> RELEASE_NOTES.md
+          fi
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        working-directory: dist
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}

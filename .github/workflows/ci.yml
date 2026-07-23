@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint · Test · Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Generate icons
+        run: npm run icons:generate
+
+      - name: Verify generated output is deterministic
+        run: |
+          before=$(find generated/lib -type f -name '*.ts' | sort | xargs cat | sha256sum)
+          npm run icons:generate
+          after=$(find generated/lib -type f -name '*.ts' | sort | xargs cat | sha256sum)
+          if [ "$before" != "$after" ]; then
+            echo "::error::Pipeline output is not deterministic across runs."
+            exit 1
+          fi
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build library
+        run: npm run build
+
+      - name: Doctor
+        run: npm run icons:doctor

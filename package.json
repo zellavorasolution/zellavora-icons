@@ -1,0 +1,75 @@
+{
+  "name": "@zellavora/icons",
+  "version": "0.1.0",
+  "description": "Enterprise-grade Angular SVG icon ecosystem — signal-first, standalone, SSR-safe, tree-shakeable.",
+  "keywords": [
+    "angular",
+    "icons",
+    "svg",
+    "icon-library",
+    "standalone",
+    "signals",
+    "ssr",
+    "zellavora"
+  ],
+  "license": "MIT",
+  "author": "Zellavora",
+  "homepage": "https://github.com/zellavora/icons#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zellavora/icons.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zellavora/icons/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "bin": {
+    "zv-icons": "./tools/cli.ts"
+  },
+  "scripts": {
+    "icons:generate": "tsx tools/cli.ts generate",
+    "icons:optimize": "tsx tools/cli.ts optimize",
+    "icons:watch": "tsx tools/cli.ts watch",
+    "icons:validate": "tsx tools/cli.ts validate",
+    "icons:preview": "tsx tools/cli.ts preview",
+    "icons:doctor": "tsx tools/cli.ts doctor",
+    "icons:stats": "tsx tools/cli.ts stats",
+    "prebuild": "npm run icons:generate",
+    "build": "ng-packagr -p ng-package.json",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "@angular/common": ">=22.0.0 <23.0.0",
+    "@angular/core": ">=22.0.0 <23.0.0"
+  },
+  "devDependencies": {
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/compiler-cli": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/platform-server": "^22.0.0",
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^22.10.0",
+    "chokidar": "^4.0.3",
+    "eslint": "^9.18.0",
+    "typescript-eslint": "^8.20.0",
+    "ng-packagr": "^22.0.0",
+    "prettier": "^3.4.2",
+    "rxjs": "^7.8.1",
+    "svgo": "^3.3.2",
+    "tsx": "^4.19.2",
+    "typescript": "^6.0.0",
+    "vitest": "^2.1.8",
+    "zone.js": "^0.15.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

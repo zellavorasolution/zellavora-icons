@@ -1,0 +1,20 @@
+/node_modules
+/dist
+/out-tsc
+/.angular
+/coverage
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.env
+.env.*
+*.tsbuildinfo
+
+# Generated icon sources — produced by `npm run icons:generate` (runs in prebuild/CI)
+/generated/lib
+
+# Generated docs artifacts
+/docs/preview.html
+/docs/icon-list.json
+
