@@ -14,13 +14,13 @@
   ],
   "license": "MIT",
   "author": "Zellavora",
-  "homepage": "https://github.com/zellavora/icons#readme",
+  "homepage": "https://github.com/zellavorasolution/zellavora-icons#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zellavora/icons.git"
+    "url": "git+https://github.com/zellavorasolution/zellavora-icons.git"
   },
   "bugs": {
-    "url": "https://github.com/zellavora/icons/issues"
+    "url": "https://github.com/zellavorasolution/zellavora-icons/issues"
   },
   "type": "module",
   "sideEffects": false,
